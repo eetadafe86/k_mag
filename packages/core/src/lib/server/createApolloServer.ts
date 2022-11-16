@@ -7,18 +7,16 @@ import {
   ApolloServerPluginLandingPageGraphQLPlayground,
   Config,
 } from 'apollo-server-core';
-import type { KeystoneContext, GraphQLConfig, SessionStrategy } from '../../types';
+import type { KeystoneContext, GraphQLConfig } from '../../types';
 
 export const createApolloServerMicro = ({
   graphQLSchema,
   context,
-  sessionStrategy,
   graphqlConfig,
   connectionPromise,
 }: {
   graphQLSchema: GraphQLSchema;
   context: KeystoneContext;
-  sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
   connectionPromise: Promise<any>;
 }) => {
@@ -33,12 +31,10 @@ export const createApolloServerMicro = ({
 export const createApolloServerExpress = ({
   graphQLSchema,
   context,
-  sessionStrategy,
   graphqlConfig,
 }: {
   graphQLSchema: GraphQLSchema;
   context: KeystoneContext;
-  sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
 }) => {
   const userContext = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>

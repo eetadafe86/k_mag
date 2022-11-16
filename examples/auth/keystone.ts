@@ -40,8 +40,16 @@ const { withAuth } = createAuth({
       // isEnabled: true,
     },
   },
+  sessionStrategy:
+    // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
+    statelessSessions({
+      data: 'name isAdmin',
+      // The maxAge option controls how long session cookies are valid for before they expire
+      maxAge: sessionMaxAge,
+      // The session secret is used to encrypt cookie data (should be an environment variable)
+      secret: sessionSecret,
+    }),
   // Populate session.data based on the authed user
-  sessionData: 'name isAdmin',
   /* TODO -- complete the UI for these features and enable them
   passwordResetLink: {
     sendToken(args) {
@@ -64,13 +72,6 @@ export default withAuth(
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     },
     lists,
-    session:
-      // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
-      statelessSessions({
-        // The maxAge option controls how long session cookies are valid for before they expire
-        maxAge: sessionMaxAge,
-        // The session secret is used to encrypt cookie data (should be an environment variable)
-        secret: sessionSecret,
-      }),
+    ui: {},
   })
 );

@@ -10,7 +10,13 @@ import {
   validate,
 } from 'graphql';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig, SecretFieldImpl } from './types';
+import {
+  AuthGqlNames,
+  AuthTokenTypeConfig,
+  InitFirstItemConfig,
+  SecretFieldImpl,
+  SessionStrategy,
+} from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
 import { getPasswordResetSchema } from './gql/getPasswordResetSchema';
@@ -48,7 +54,7 @@ export const getSchemaExtension = ({
   initFirstItem,
   passwordResetLink,
   magicAuthLink,
-  sessionData,
+  sessionStrategy,
 }: {
   identityField: string;
   listKey: string;
@@ -57,7 +63,7 @@ export const getSchemaExtension = ({
   initFirstItem?: InitFirstItemConfig<any>;
   passwordResetLink?: AuthTokenTypeConfig;
   magicAuthLink?: AuthTokenTypeConfig;
-  sessionData: string;
+  sessionStrategy: SessionStrategy<any>;
 }): ExtendGraphqlSchema =>
   graphql.extend(base => {
     const uniqueWhereInputType = assertInputObjectType(
@@ -82,6 +88,7 @@ export const getSchemaExtension = ({
       gqlNames,
       secretFieldImpl: getSecretFieldImpl(base.schema, listKey, secretField),
       base,
+      sessionStrategy,
     });
 
     // technically this will incorrectly error if someone has a schema extension that adds a field to the list output type
@@ -93,7 +100,7 @@ export const getSchemaExtension = ({
         // this isn't used to get the itemQueryName and we don't know it here
         pluralGraphQLName: '',
       }).itemQueryName
-    }(where: { id: $id }) { ${sessionData} } }`;
+    }(where: { id: $id }) { ${sessionStrategy.data} } }`;
 
     let ast;
     try {
@@ -123,6 +130,7 @@ export const getSchemaExtension = ({
           gqlNames,
           graphQLSchema: base.schema,
           ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
+          sessionStrategy,
         }),
       passwordResetLink &&
         getPasswordResetSchema({
@@ -145,6 +153,7 @@ export const getSchemaExtension = ({
           gqlNames,
           magicAuthTokenSecretFieldImpl: getSecretFieldImpl(base.schema, listKey, 'magicAuthToken'),
           base,
+          sessionStrategy,
         }),
     ].filter((x): x is Exclude<typeof x, undefined> => x !== undefined);
   });

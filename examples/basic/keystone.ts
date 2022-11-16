@@ -17,7 +17,12 @@ const auth = createAuth({
       isAdmin: true,
     },
   },
-  sessionData: 'name isAdmin',
+  sessionStrategy: statelessSessions({
+    data: 'name isAdmin',
+    // The session secret is used to encrypt cookie data (should be an environment variable)
+    maxAge: sessionMaxAge,
+    secret: sessionSecret,
+  }),
 });
 
 // TODO -- Create a separate example for access control in the Admin UI
@@ -56,12 +61,5 @@ export default auth.withAuth(
     },
     lists,
     extendGraphqlSchema,
-    session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),
-    // TODO -- Create a separate example for stored/redis sessions
-    // session: storedSessions({
-    //   store: new Map(),
-    //   // store: redisSessionStore({ client: redis.createClient() }),
-    //   secret: sessionSecret,
-    // }),
   })
 );

@@ -5,7 +5,7 @@ import { GraphQLSchema } from 'graphql';
 // @ts-ignore
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { ApolloServer } from 'apollo-server-express';
-import type { KeystoneConfig, KeystoneContext, SessionStrategy, GraphQLConfig } from '../../types';
+import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -24,20 +24,17 @@ const addApolloServer = async ({
   config,
   graphQLSchema,
   context,
-  sessionStrategy,
   graphqlConfig,
 }: {
   server: express.Express;
   config: KeystoneConfig;
   graphQLSchema: GraphQLSchema;
   context: KeystoneContext;
-  sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
 }) => {
   const apolloServer = createApolloServerExpress({
     graphQLSchema,
     context,
-    sessionStrategy,
     graphqlConfig,
   });
 
@@ -112,7 +109,6 @@ export const createExpressServer = async (
     config,
     graphQLSchema,
     context,
-    sessionStrategy: config.session,
     graphqlConfig: config.graphql,
   });
 

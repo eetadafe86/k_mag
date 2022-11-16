@@ -12,19 +12,7 @@ export function createGraphQLSchema(
 ) {
   // Start with the core keystone graphQL schema
   let graphQLSchema = getGraphQLSchema(lists, {
-    mutation: config.session
-      ? {
-          endSession: graphql.field({
-            type: graphql.nonNull(graphql.Boolean),
-            async resolve(rootVal, args, context) {
-              if (context.sessionStrategy) {
-                await context.sessionStrategy.end({ context });
-              }
-              return true;
-            },
-          }),
-        }
-      : {},
+    mutation: {},
     query: {
       keystone: graphql.field({
         type: graphql.nonNull(KeystoneMeta),

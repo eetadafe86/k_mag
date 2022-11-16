@@ -78,10 +78,10 @@ export function makeCreateContext({
     async function withRequest(req: IncomingMessage, res?: ServerResponse) {
       contextToReturn.req = req;
       contextToReturn.res = res;
-      if (!config.session) {
+      if (!config.getSession) {
         return contextToReturn;
       }
-      contextToReturn.session = await config.session.get({ context: contextToReturn });
+      contextToReturn.session = await config.getSession({ context: contextToReturn });
       return createContext({ session: contextToReturn.session, sudo, req, res });
     }
     const dbAPI: KeystoneContext['db'] = {};
@@ -91,7 +91,7 @@ export function makeCreateContext({
       query: itemAPI,
       prisma: prismaClient,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
-      sessionStrategy: config.session,
+      getSession: config.getSession,
       sudo: () => createContext({ sudo: true, req, res }),
       exitSudo: () => createContext({ sudo: false, req, res }),
       withSession: session => {

@@ -17,7 +17,6 @@ export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient
   const apolloServer = createApolloServerMicro({
     graphQLSchema,
     context,
-    sessionStrategy: initializedKeystoneConfig.session,
     graphqlConfig: initializedKeystoneConfig.graphql,
     connectionPromise: connect(),
   });
