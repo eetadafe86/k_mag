@@ -269,7 +269,7 @@ type Mutation {
   deleteSessions(where: [SessionWhereUniqueInput!]!): [Session]
   authenticate(id: ID!): Session
   refresh(id: ID!): Session
-  deauthenticate(token: String!): Session
+  deauthenticate: Session
 }
 
 type Query {

@@ -7,27 +7,11 @@ async function startSession({ id, context }: { id: string; context: Context }) {
   const sudoContext = context.sudo();
   const token = randomBytes(16).toString('hex'); // random 128-bit token
 
-  await sudoContext.db.Session.createOne({
+  return await sudoContext.db.Session.createOne({
     data: {
       token,
       user: { connect: { id } },
       ended: false,
-    },
-  });
-
-  return token;
-}
-async function endSession({ context }: { context: Context }) {
-  const sudoContext = context.sudo();
-  const token = context.req?.headers?.authorization;
-  if (!token) return; // not authenticated
-
-  await sudoContext.db.Session.updateOne({
-    where: {
-      token,
-    },
-    data: {
-      ended: true,
     },
   });
 }
@@ -71,9 +55,9 @@ export const extendGraphqlSchema = graphql.extend(base => {
         }, // parameters
         type: base.object('Session'), // return type
         async resolve(source, { id }, context: Context) {
-          const token = await startSession({ id, context });
-          console.log({ token });
-          return { token };
+          const session = await startSession({ id, context });
+          console.log(session.token);
+          return session;
         },
       }),
 
@@ -85,18 +69,27 @@ export const extendGraphqlSchema = graphql.extend(base => {
         async resolve(source, { id }, context: Context) {
           if (!context.session) return {}; // only authenticated peeps
 
-          const token = await startSession({ id, context });
-          return { id, token };
+          const session = await startSession({ id, context });
+          return session;
         },
       }),
 
       deauthenticate: graphql.field({
-        args: {
-          token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
-        }, // parameters
         type: base.object('Session'), // return type
         async resolve(source, args, context: Context) {
-          await endSession({ context });
+          if (!context.session) return {};
+          const sudoContext = context.sudo();
+          const token = context.req?.headers?.authorization;
+          if (!token) return; // not authenticated
+
+          return await sudoContext.db.Session.updateOne({
+            where: {
+              token,
+            },
+            data: {
+              ended: true,
+            },
+          });
         },
       }),
     },
@@ -104,7 +97,8 @@ export const extendGraphqlSchema = graphql.extend(base => {
 });
 
 async function insertSeedData(context: Context) {
-  const { id } = await context.db.User.createOne({
+  const sudoContext = context.sudo();
+  const { id } = await sudoContext.db.User.createOne({
     data: {
       name: 'Daniel',
     },
@@ -137,14 +131,14 @@ query getUsers {
 }
 
 mutation tryAuth {
-  authenticate(id: "<YOUR TOKEN>") {
+  authenticate(id: "<YOUR ID>") {
     id
     token
   }
 }
 
 mutation tryDeauth {
-  deauthenticate(token: "<YOUR TOKEN>") {
+  deauthenticate {
     id
   }
 }

@@ -1,20 +1,13 @@
 import { list } from '@keystone-6/core';
 import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
-import { Lists } from '.keystone/types';
+import { Lists, Context } from '.keystone/types';
 
-type Session = {
-  id: string | null;
-  data: null | {
-    id: string;
-  };
-};
-
-function hasSession({ session }: { session: Session }): boolean {
-  return Boolean(session.data);
+function hasSession({ context }: { context: Context }): boolean {
+  return Boolean(context.session?.id);
 }
 
-function makeAccess(f: ({ session }: { session: Session }) => boolean) {
+function makeAccess(f: ({ context }: { context: Context }) => boolean) {
   return {
     filter: {
       read: f,
