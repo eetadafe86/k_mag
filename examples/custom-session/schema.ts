@@ -4,35 +4,35 @@ import { select } from '@keystone-6/core/fields';
 import { Lists } from '.keystone/types';
 
 type Session = {
-  id: string | null
+  id: string | null;
   data: null | {
-    id: string
-  }
+    id: string;
+  };
 };
 
-function hasSession ({ session }: { session: Session }): boolean {
+function hasSession({ session }: { session: Session }): boolean {
   return Boolean(session.data);
 }
 
-function makeAccess (f: ({ session }: { session: Session }) => boolean) {
+function makeAccess(f: ({ session }: { session: Session }) => boolean) {
   return {
     filter: {
       read: f,
       create: f,
       update: f,
-      delete: f
+      delete: f,
     },
     operation: {
       query: f,
       create: f,
       update: f,
-      delete: f
+      delete: f,
     },
     item: {
       create: f,
       update: f,
-      delete: f
-    }
+      delete: f,
+    },
   };
 }
 
@@ -61,18 +61,18 @@ export const lists: Lists = {
       name: text({ validation: { isRequired: true } }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
-    access: defaultAccess
+    access: defaultAccess,
   }),
   Session: list({
     fields: {
-//        token: password({ validation: { isRequired: true } }), // TODO
+      //        token: password({ validation: { isRequired: true } }), // TODO
       token: text({
         isIndexed: 'unique',
-        validation: { isRequired: true }
+        validation: { isRequired: true },
       }),
       user: relationship({ ref: 'User' }),
-      ended: checkbox()
+      ended: checkbox(),
     },
-    access: noAccess
+    access: noAccess,
   }),
 };
