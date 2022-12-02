@@ -1,0 +1,37 @@
+{
+  "name": "@keystone-6/example-keystone-in-next",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "keystone:dev": "keystone dev",
+    "keystone:start": "keystone start",
+    "keystone:build": "keystone build",
+    "next:dev": "next dev -p 4000",
+    "next:build": "next build",
+    "dev": "concurrently \"yarn keystone:dev\" \"yarn next:dev\"",
+    "build": "yarn keystone:build && yarn next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@apollo/server-plugin-landing-page-graphql-playground": "^4.0.0",
+    "@keystone-6/auth": "^5.0.1",
+    "@keystone-6/core": "^3.1.3",
+    "@keystone-6/fields-document": "^5.0.2",
+    "@preconstruct/next": "^4.0.0",
+    "apollo-server-micro": "^3.5.0",
+    "graphql-request": "^5.0.0",
+    "graphql-yoga": "^3.1.0",
+    "next": "^13.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.2",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "concurrently": "^7.3.0",
+    "typescript": "~4.7.4"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/keystone-in-nextjs"
+}
