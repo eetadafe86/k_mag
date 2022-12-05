@@ -1,34 +1,44 @@
-# Keystone and Next.js in a single server
+# Keystone in Next.js
 
-- Keystone can be used within Next.js server environments without even starting the Keystone server using `getContext` API.
-- However since we don't start the Keystone server we won't have access to Keystone's Admin UI.
-- You can use the generated Keystone GraphQL schema to setup your own GraphQL API as a Next.js route. (refer to [/pages/api/graphql-apollo.ts](/pages/api/graphql-apollo.ts))
+Keystone could double down as a powerful data engine within Next.js applications without having to host a separate Keystone server. This is made possible by Keystone's `getContext` API.
+
+- **CRUD data within your Next.js server**: You can use the Keystone data APIs directly in Next.js `getStaticProps` or `getServerSideProps` to CRUD data. ⚡️
+- **CRUD data from browser**: You can use the generated Keystone GraphQL schema to setup your own GraphQL server in a Next.js route. This enables you to send GraphQL requests from the browser. 🤯 (refer to [/pages/api/graphql-yoga.ts](/pages/api/graphql-yoga.ts) for implementation details)
+- You don't have to start the Keystone server at all.
+
+_Note: Since you are not starting the keystone server, the Admin UI will not be available. You can host Keystone as a separate server if you need Admin UI._
 
 ## Notes
 
-- The `keystone.db` committed with this repo has my login setup. Demo user email is `bruce@email.com`, password is `passw0rd`.
-- You start your Next.js app by running `yarn dev`. You don't need to start the keystone server since `getContext` will work without starting the Keystone server.
-- In local, when you update your Keystone schema, you should run `yarn keystone:dev` or `yarn keystone:build` to rebuild your `schema.graphql` and `schema.prisma` files.
+- This example is setup with seed data. Demo user email is `bruce@email.com`, password is `passw0rd`.
+- `yarn keystone:dev` to start your Next.js app. You don't need to start the keystone server since `getContext` will work without starting the Keystone server.
+- In local, when you update your Keystone schema, you should run `yarn keystone:dev` or `yarn keystone:build` to rebuild your `schema.graphql` and `schema.prisma` files. You could also use the shorthand `yarn dev` that starts both your next server and Keystone server (local only) for development.
 - When you deploy your Next.js app, just remember to run `yarn keystone:build` once to make sure you have the latest schema built for `getContext` API within your Next.js app.
 
 ## FAQ
 
 ### 1. Why won't Admin UI work?
 
-Because of the way Keytone's current Admin UI is built. Your app is a Next.js app. Keystone's Admin UI is also a Next.js app. You can't have two Next.js apps running in a single server. So if we don't start Keystone server, we won't have access to Keystone's Admin UI. You can access it in local (use the command `yarn keystone:dev`) because you can easily start two servers in your local but once you deploy your Next.js app you won't have access to the Admin UI or the GraphQL API.
+Admin UI needs the Keystone server to work. Your Next.js app runs on a Next.js server. Keystone's Admin UI runs on Keystone server. You can't have two servers running in a Next.js production environment. Since we don't start the Keystone server, we won't have access to Keystone's Admin UI. You can access it in local (use the command `yarn keystone:dev`) because you can easily start two servers in your local but once you deploy your Next.js app you won't have access to the Admin UI.
 
 ### 2. What should I do to both use Keystone in my Next.js app and have a fully functioning Admin UI?
 
-Easy. Deploy your app twice to two different servers.
+Easy. Deploy twice to two different servers.
 
-1. Deploy your Next.js app to one instance
-2. Deploy the Keystone server (commands in package.json) to another instance
+1. Deploy your Next.js app to one instance (Eg. Vercel).
+2. Deploy the Keystone server (commands in package.json) to another instance (Eg. Digital Ocean).
 
-Both these apps communicate with the same database and are built with the same Keystone code so everything will work as is.
+Both these apps connect with the same database and are built with the same source code so everything will work as you expect it to.
 
 ### 3. I want the full Keystone experience with Next.js
 
 The only way to do that now is to use Keystone as a standalone server and build your Next.js app separately.
 
-1. Develop and deploy Keystone to a separate server. You will now have both the Admin UI and GraphQL API.
+1. Develop and deploy Keystone to a separate instance. You will now have both the Admin UI and GraphQL API.
 2. Develop your Next.js app independently without Keystone dependencies and send network requests to your Keystone GraphQL API for data.
+
+## Give it a try
+
+Deploy this example to Vercel and see it for yourself.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkeystonejs%2Fkeystone%2Ftree%2Fmain%2Fexamples%2Fkeystone-in-nextjs)

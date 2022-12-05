@@ -6,7 +6,13 @@ import { statelessSessions } from '@keystone-6/core/session';
 // Don't forget to set this env variable in vercel
 // or wherever you are deploying your Next.js app
 let sessionSecret = process.env.SESSION_SECRET;
-if (!sessionSecret && process.env.NODE_ENV !== 'production') {
+/*
+  It is okay to use a random secret for development.
+  But it's even better to use a stable secret via a .env file.
+  BUT PLEASE REMEMBER TO ADD YOUR OWN SESSION SECRET
+  FOR PRODUCTION BUILDS.
+*/
+if (!sessionSecret) {
   sessionSecret = randomBytes(32).toString('hex');
 }
 

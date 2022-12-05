@@ -5,8 +5,8 @@ import { client } from '../util/request';
 export function Header() {
   const [isLoading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<{ name: string } | null>(null);
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     getCurrentLoggedInUser()
@@ -21,14 +21,16 @@ export function Header() {
   }, []);
 
   const login = () => {
-    const email = emailRef?.current?.value;
-    const password = passwordRef?.current?.value;
+    if (emailRef.current && passwordRef.current) {
+      const email = emailRef.current.value;
+      const password = passwordRef.current.value;
 
-    authenticateUser({ email, password }).then(data => {
-      if (data?.authenticateUserWithPassword?.item?.id) {
-        window.location.reload();
-      }
-    });
+      authenticateUser({ email, password }).then(data => {
+        if (data?.authenticateUserWithPassword?.item?.id) {
+          window.location.reload();
+        }
+      });
+    }
   };
 
   const logout = () => {
