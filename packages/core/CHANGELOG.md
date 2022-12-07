@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 4.0.2
+
+### Patch Changes
+
+- [#8159](https://github.com/keystonejs/keystone/pull/8159) [`bdbe1ad64`](https://github.com/keystonejs/keystone/commit/bdbe1ad64a44bccb28258d490b637e1d81b52f70) Thanks [@borisno2](https://github.com/borisno2)! - Adds the ability to disable telemetry using environment variable `KEYSTONE_TELEMETRY_DISABLED`
+
 ## 4.0.1
 
 ### Patch Changes
