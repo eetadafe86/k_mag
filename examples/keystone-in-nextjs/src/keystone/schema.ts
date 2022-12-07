@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core';
+import { allowAll, denyAll, allOperations } from '@keystone-6/core/access';
 import { text, password, timestamp } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
@@ -7,10 +8,10 @@ const permissions = {
   public: () => true,
   readOnly: {
     operation: {
-      query: () => true,
-      create: () => false,
-      update: () => false,
-      delete: () => false,
+      // deny create/read/update/delete
+      ...allOperations(denyAll),
+      // override the deny and allow only query
+      query: allowAll,
     },
   },
 };
